@@ -166,9 +166,9 @@ def _process_ctx_request(ctx, args):
                 # read dict prop by path
                 value = path_dict.get(key)
                 current = value
-            elif index + 2 == num_args:
+            elif index + 3 == num_args:
                 # set dict prop by path
-                value = args[index + 1]
+                value = args[index + 2]
                 path_dict.set(key, value)
                 current = None
             else:
