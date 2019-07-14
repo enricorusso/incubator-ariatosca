@@ -652,7 +652,8 @@ def get_modelable_entity_parameter(modelable_entity, parameters, nested_paramete
             value = value[name_or_index] # Parameter
             # We are not using Parameter.value, but rather Parameter._value, because we want to make
             # sure to get "final" (it is swallowed by Parameter.value)
-            value, final = evaluate(value._value, final, value)
+            if hasattr(value, "_value"):
+                value, final = evaluate(value._value, final, value)
         else:
             found = False
             break
