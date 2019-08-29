@@ -18,6 +18,7 @@
 """
 
 import collections
+# from sqlalchemy.orm.collections import mapped_collection
 import json
 import re
 import socket
@@ -174,10 +175,6 @@ def _process_ctx_request(ctx, args):
             else:
                 raise RuntimeError('Illegal argument while accessing dict')
             break
-        elif arg in current.keys():
-            # TODO...check type
-            value = current[arg].value
-            current = value._wrapped
         elif callable(current):
             kwargs = {}
             remaining_args = args[index:]
@@ -186,6 +183,10 @@ def _process_ctx_request(ctx, args):
                 remaining_args = remaining_args[:-1]
             current = current(*remaining_args, **kwargs)
             break
+        elif arg in current.keys():
+            # TODO...check type
+            value = current[arg].value
+            current = value._wrapped
         else:
             raise RuntimeError('{0} cannot be processed in {1}'.format(arg, args))
         index += 1
