@@ -174,6 +174,10 @@ def _process_ctx_request(ctx, args):
             else:
                 raise RuntimeError('Illegal argument while accessing dict')
             break
+        elif arg in current.keys():
+            # TODO...check type
+            value = current[arg].value
+            current = value._wrapped
         elif callable(current):
             kwargs = {}
             remaining_args = args[index:]
