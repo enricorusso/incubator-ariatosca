@@ -703,24 +703,33 @@ class NodeBase(InstanceModelMixin):
         return satisfied
 
     def find_host(self):
-        def _find_host(node):
+        def _find_host_outbound(node):
             if node.type.role == 'host':
                 return node
             for the_relationship in node.outbound_relationships:
-                if (the_relationship.target_capability is not None) and \
-                    the_relationship.target_capability.type.role == 'host':
-                    host = _find_host(the_relationship.target_node)
+                #if (the_relationship.target_capability is not None) and \
+                #        the_relationship.target_capability.type.role == 'host':
+                if (the_relationship.target_capability is not None):
+                    host = _find_host_outbound(the_relationship.target_node)
                     if host is not None:
-                        return host
-            for the_relationship in node.inbound_relationships:
-                if (the_relationship.target_capability is not None) and \
-                    the_relationship.target_capability.type.role == 'feature':
-                    host = _find_host(the_relationship.source_node)
-                    if host is not None:
+                        print node.name + " -> " + host.name
                         return host
             return None
 
-        self.host = _find_host(self)
+        def _find_host_inbound(node):
+            for the_relationship in node.inbound_relationships:
+                if (the_relationship.target_capability is not None) and \
+                        the_relationship.target_capability.type.role == 'feature':
+                    host = _find_host_inbound(the_relationship.source_node)
+                    if host is not None:
+                        print node.name + " -> " + host.name
+                        return host
+
+            return None
+
+        self.host = _find_host_outbound(self)
+        if (not self.host):
+            self.host = _find_host_inbound(self)
 
     def configure_operations(self):
         for interface in self.interfaces.itervalues():
