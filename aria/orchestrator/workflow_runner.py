@@ -30,6 +30,8 @@ from ..modeling import models
 from ..modeling import utils as modeling_utils
 from ..utils.imports import import_fullname
 
+from ..cli import env
+import site
 
 DEFAULT_TASK_MAX_ATTEMPTS = 30
 DEFAULT_TASK_RETRY_INTERVAL = 30
@@ -170,6 +172,11 @@ class WorkflowRunner(object):
             self._resource_storage.service_template.base_path,
             str(self.service.service_template.id))
         sys.path.append(service_template_resources_path)
+
+        # add plugin directories in sys.path
+        plugin_path = os.path.join(os.environ.get('ARIA_WORKDIR', os.path.expanduser('~')), env.ARIA_DEFAULT_WORKDIR_NAME, 'plugins/')
+        for dirname in os.listdir(plugin_path):
+            sys.path.append(os.path.join(plugin_path, dirname, 'lib', os.listdir(os.path.join(plugin_path,dirname,'lib'))[0], 'site-packages/'))
 
         try:
             workflow_fn = import_fullname(workflow.function)

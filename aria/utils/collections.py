@@ -229,18 +229,19 @@ def merge(dict_a, dict_b, path=None, strict=False):
     # TODO: 86622a1408e0f171a12e140d53c4ffac4b6caaa3/comments.py?fileviewer=file-view-default
 
     path = path or []
-    for key, value_b in dict_b.iteritems():
-        if key in dict_a:
-            value_a = dict_a[key]
-            if isinstance(value_a, dict) and isinstance(value_b, dict):
-                merge(value_a, value_b, path + [str(key)], strict)
-            elif value_a != value_b:
-                if strict:
-                    raise ValueError('dict merge conflict at %s' % '.'.join(path + [str(key)]))
-                else:
-                    dict_a[key] = value_b
-        else:
-            dict_a[key] = value_b
+    if isinstance(dict_b, dict):
+        for key, value_b in dict_b.iteritems():
+            if key in dict_a:
+                value_a = dict_a[key]
+                if isinstance(value_a, dict) and isinstance(value_b, dict):
+                    merge(value_a, value_b, path + [str(key)], strict)
+                elif value_a != value_b:
+                    if strict:
+                        raise ValueError('dict merge conflict at %s' % '.'.join(path + [str(key)]))
+                    else:
+                        dict_a[key] = value_b
+            else:
+                dict_a[key] = value_b
     return dict_a
 
 
