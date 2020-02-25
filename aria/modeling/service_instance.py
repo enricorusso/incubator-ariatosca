@@ -709,6 +709,7 @@ class NodeBase(InstanceModelMixin):
             for the_relationship in node.outbound_relationships:
                 #if (the_relationship.target_capability is not None) and \
                 #        the_relationship.target_capability.type.role == 'host':
+                # ENRICO
                 if (the_relationship.target_capability is not None):
                     host = _find_host_outbound(the_relationship.target_node)
                     if host is not None:
